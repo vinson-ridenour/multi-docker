@@ -1,34 +1,39 @@
 # everytime we push new code to Github master, Travis will clone all code then use these directions to build 
 # our docker image, run tests, then report on whether tests failed or passed
-# hey Travis we need super user permissions to execute this build
+
+# tells Travis we need super user permissions to execute this build
 sudo: required
-# travis needs to know we have the docker cli pre-installed, travis will install docker into our running container
+# Travis needs to know we have the docker cli pre-installed, travis will install docker into our running container
 services:
   - docker
 
-# steps or setup before tests are run or deployment, etc (basically build our image)
+# builds our test image(s), then runs our tests in the 'script' section, can build/test as many images as have tests for
 before_install:
-  # builds the image of our client project, names it (can be anything - will only be used by Travis), make it use the Dockerfile.dev file 
-  # (not PROD Dockerfile cuz this is for testing), ./client/etc because want to build in client directory not current
-  # directory where .travis.yml file lives
+  # can name the image anything - will only be used by Travis 
+  # make it use the Dockerfile.dev file (not PROD Dockerfile cuz this is for testing), ./client/etc because we want 
+  # to build in client directory not current directory where .travis.yml file lives
   - docker build -t morgenes23/react-test -f ./client/Dockerfile.dev ./client
+  # e.g. build another image here that we have tests for
 
-# script section is primary test running section, can add in as many here as we want (where I'd add cucumber scripts!!)
-# commands necessary to run our test suite - Travis will be watching the output of these and if any get a
-# return status code of 0, Travis will assume code is broken, need -- --coverage to make test script exit
-# cuz by default it will hang and wait for user input
+# this is primary test running section, can add in as many here as we want
+# these are commands necessary to run our test suite - Travis will be watching the output of these and if any get a
+# return status code of anything other than 0, Travis will assume code is broken, need -- --coverage to make 
+# test script exit cuz by default it will hang and wait for user input
 script:
-  - docker run morgenes23/react-test npm test -- --coverage
+  - docker run morgenes23/react-test npm run test -- --coverage
+  # - add script for running cucumber tests here - add cucumber test folders in each container
 
 # builds PROD versions of client, nginx, server, worker images
 after_success:
   # don't need to specify the dockerfile to use since default is the PROD Dockerfile
+  # could do this commented out line but don't need it:
+  # - docker build -t morgenes23/multi-client ./client/Dockerfile ./client
   - docker build -t morgenes23/multi-client ./client
   - docker build -t morgenes23/multi-nginx ./nginx
   - docker build -t morgenes23/multi-server ./server
   - docker build -t morgenes23/multi-worker ./worker
 
-# Log in to Docker CLI (add encrypted env variables in Travis -> more options -> settings first)
+# allows Travis to log in to Docker CLI (add encrypted env variables in Travis -> more options -> settings first)
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
 # Take these images and push them to docker hub

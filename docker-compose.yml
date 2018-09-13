@@ -1,6 +1,7 @@
 version: '3'
 services:
   # name of service - can be anything
+  
   postgres:
     # look at docker hub for base image for project - Explore, Postgres, full descrip -> at the time 'latest' tag
     # is associated with version 10 of postgres - can test by docker-compose up to spin up postgres DB
@@ -30,7 +31,7 @@ services:
 
     volumes:
     # everything will be copied to specified WORKDIR (/app) folder of the container
-    # this says inside the container, don't try to override it node_modules, just leave it
+    # this says inside the container, don't try to override node_modules, just leave it
       - /app/node_modules
       # copy over everything in server folder into the WORKDIR /app folder (EXCEPT for node_modules folder)
       # so now any changes made in /server folder will reflect into /app folder of the container, don't have to rebuild
