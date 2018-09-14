@@ -13,9 +13,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "addition": "cucumber-js ./features -r ./steps"
+    "test": "react-scripts test --env=jsdom | cucumber-js ./features -r ./steps",
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "cucumber": "^5.0.0",
