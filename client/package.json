@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "0.18.0",
+    "chai": "^4.1.2",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
     "react-router-dom": "4.3.1",
@@ -13,7 +14,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "addition": "cucumber-js ./features -r ./steps"
   },
   "devDependencies": {
     "cucumber": "^5.0.0",
